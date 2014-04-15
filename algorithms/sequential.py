@@ -66,10 +66,8 @@ def runScript():
     hm.addCenterField();
 
     numLargeConfRooms = 3;
-    # elemsToPlace = [[0, 0, 0, 0]];
     pregroup        = [[7,1],[5,1],[6,1],[1,20]];
     groupOrder      = [2, 0, 3, 4, 5, 6, 7,1];
-    #postgroup       = [[7,1],[5,1],[6,1]];
     postgroup = [];
     totalToPlace    = [10, 40, 3, 6, 3, 1, 1, 1];
     elemsToPlace = calculateTotalElementOrderArray(pregroup, groupOrder, postgroup, totalToPlace);
@@ -79,8 +77,6 @@ def runScript():
         scaleVector = A[e[2]];
         plt.hold(True);
         for i in range(int(e[3])):
-            #[y,x] = hm.maximizeConvolvedHeatMap(e[0], e[1], e[2]);
-###
             [[y0,x0],val0] = hm.maximizeConvolvedHeatMap(e[0], e[1], e[2]);
             [[y1,x1],val1] = hm.maximizeConvolvedHeatMap(e[1], e[0], e[2]);
             if(val0 > val1):
@@ -93,11 +89,8 @@ def runScript():
                 y = y1;
                 obsToDraw.append([x, y, e[1], e[0], e[2], j]);
                 ob = Obstacle(x, y, e[1], e[0], e[2]);
-###
             displayMat(hm, e[2], obsToDraw, count);
             print e[2], count;
-            #obsToDraw.append([x, y, e[0], e[1], e[2], j]);
-            #ob = Obstacle(x, y, e[0], e[1], e[2]);
             objType.append(ob.obType);
             objX.append(ob.x);
             objY.append(ob.y);
@@ -106,14 +99,6 @@ def runScript():
             hm.populateField([ob]);
             hm.addCirculation(ob);
             count += 1;
-
-    # plt.hold(True);
-    # plt.figure();
-    # drawObs(obsToDraw, 'black');
-    # plt.xlim(0,L);
-    # plt.ylim(0,H);
-    # plt.hold(False);
-    #plt.show();
     
 ## Draws objects
 def drawObs(obs,col):
@@ -124,7 +109,6 @@ def drawObs(obs,col):
 
 ## Displays the heat map (matrix)
 def displayMat(heatMap, obType, obs, n):
-    #plt.figure();
     m = thresholdMapData(heatMap.returnHeatMapData(obType), THRESH);
     plt.imshow(m);
     plt.hold(True);
@@ -132,8 +116,7 @@ def displayMat(heatMap, obType, obs, n):
     plt.xlim(0,L);
     plt.ylim(0,H);
     drawObs(obs,'white');
-    plt.savefig('sequentialplots/im'+str(n)+'.png');
-    #plt.show();
+    plt.savefig('/Users/rohan/Documents/Vannevar/spaceplanning/sequentialplots/im'+str(n)+'.png');
 
 ## Creates the total ordering array with groups for element placement
 def calculateTotalElementOrderArray(pregroup, groupOrder, postgroup, totalToPlace):
