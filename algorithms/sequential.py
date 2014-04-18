@@ -18,8 +18,8 @@ objH = [];
 
 ## PARAMETERS ######################################################################################
 decay = 1;
-C_Block = 1;
-C_Power = .7;
+C_Block = 2;
+C_Power = .6;
 DL_Influence = 18;
 X_dim = 100;
 Y_dim = 65;
@@ -37,7 +37,7 @@ H = int(Y_dim);                            # Height of Floorplate
 #    Office(0), WS(1), CL(2), CS(3), PS(4), E(5), S(6), R(7)
 A = [
     [-1, 0.7, 0.9, 0.6, 0.3, 0.0, 0.0, 0.0],
-    [0.7, 1, 0.3, 0.9, 0.2, 0.0,  0.0,  -0.8],
+    [0.7, .7, 0.3, 0.9, 0.2, 0.0,  0.0,  -0.8],
     [0.9, 0.3,-0.8, 0.5, 0.8, 0.8, 0.8, 0.4],
     [0.6, 0.9, 0.5, -0.2, 0.1, 0.6, 0.6, 0.0],
     [0.3, 0.2, 0.8, 0.1, 0.0, 0.0, 0.0, 0.0],
@@ -56,7 +56,7 @@ lhArray = [
             [19, 13]];
 elementLabels = ['Of.', 'WS', 'Lg. Conf', 'Sm. Conf', 'PS', 'Elev', 'Stairs', 'RR'];
 daylightAdj = [0.6, 0.9, 0.5, 0.4, 0, 0, 0, 0];
-centerFieldAdj = [-.6, -.6, -0.4, -.6, .3, .9, .9, .9];
+centerFieldAdj = [-.6, -.6, .1, -.1, .3, 10.9, 10.9, 10.9];
 numElements = len(A[0]);
 ####################################################################################################
 def runScript():
@@ -66,7 +66,7 @@ def runScript():
     hm.addCenterField();
 
     numLargeConfRooms = 3;
-    pregroup        = [[7,1],[5,1],[6,1],[1,20]];
+    pregroup        = [[7,1],[5,1],[6,1], [1, 20]];
     groupOrder      = [2, 0, 3, 4, 5, 6, 7,1];
     postgroup = [];
     totalToPlace    = [10, 40, 3, 6, 3, 1, 1, 1];
@@ -229,19 +229,19 @@ class HeatMap:
         for y in range(ob.y+ob.h,min(ob.y+ob.h+CIRCULATION_BLOCK, self.env.ylen)):
             for x in range(self.env.xlen):
                 d = abs(ob.x+0.5*ob.l-x)+1;
-                self.env.grid[y][x]['ofield'] -= CIRCULATION_MAX_VALUE/d;
+                self.env.grid[y][x]['ofield'] = -max(abs(self.env.grid[y][x]['ofield']), CIRCULATION_MAX_VALUE/d);
         for y in range(max(ob.y-CIRCULATION_BLOCK, 0), ob.y):
             for x in range(self.env.xlen):
                 d = abs(ob.x+0.5*ob.l-x)+1;
-                self.env.grid[y][x]['ofield'] -= CIRCULATION_MAX_VALUE/d;
+                self.env.grid[y][x]['ofield'] = -max(abs(self.env.grid[y][x]['ofield']), CIRCULATION_MAX_VALUE/d);
         for y in range(self.env.ylen):
             for x in range(ob.x+ob.l, min(ob.x+ob.l+CIRCULATION_BLOCK, self.env.xlen)):
                 d = abs(ob.y+0.5*ob.h-y)+1;
-                self.env.grid[y][x]['ofield'] -= CIRCULATION_MAX_VALUE/d;
+                self.env.grid[y][x]['ofield'] = -max(abs(self.env.grid[y][x]['ofield']), CIRCULATION_MAX_VALUE/d);
         for y in range(self.env.ylen):
             for x in range(max(ob.x-CIRCULATION_BLOCK, 0), ob.x):
                 d = abs(ob.y+0.5*ob.h-y)+1;
-                self.env.grid[y][x]['ofield'] -= CIRCULATION_MAX_VALUE/d;
+                self.env.grid[y][x]['ofield'] = -max(abs(self.env.grid[y][x]['ofield']), CIRCULATION_MAX_VALUE/d);
 
     # Adds the Daylight Field to the floor plate
     def addDaylightField(self, sides):
@@ -363,7 +363,7 @@ class Obstacle:
         self.y = y;
         self.l = l;
         self.h = h;
-        self.THRESH = 0.5*(l+h);
+        self.THRESH = (l+h);
         self.SIZE = max(0.5*l,0.5*h);
 
 ## Calculates the field values via a distance metric
