@@ -1,8 +1,11 @@
+import Grasshopper as gh
+import Grasshopper.DataTree as GH_tree
+import Grasshopper.Kernel.Data as GH_data
+
 import math
 #import matplotlib.pyplot as plt
 import random
 import copy
-from Grasshopper import DataTree as tree
 import ghpythonlib.components as ghcomp
 import ghpythonlib.parallel
 import Rhino.Geometry as geometry
@@ -423,3 +426,18 @@ if __name__ == '__main__':
     Xpos = objX;
     Ypos = objY;
     HeatMapValues = objVals;
+    
+    dataTree = GH_tree[object]();
+
+    for i,j in enumerate(HeatMapValues): 
+        print i;
+        print j;
+        path = GH_data.GH_Path(i);
+        
+        for k,l in enumerate(j):
+            dataTree.Add(l, path);
+        
+    
+    
+    fields = dataTree;
+    
