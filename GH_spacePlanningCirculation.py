@@ -10,6 +10,20 @@ import ghpythonlib.components as ghcomp
 import ghpythonlib.parallel
 import Rhino.Geometry as geometry
 
+####################################################################################################
+## GH Functions
+
+def getGHAdjacencies():
+    array = [];
+#    print Adjacencies;
+#    print Adjacencies.BranchCount;
+#    print "hello"
+    for i in range(Adjacencies.BranchCount):
+#        print Adjacencies.Branch(i);
+        array.append(Adjacencies.Branch(i));
+    return array;
+    
+    
 # GH Global Output Arrays
 grasshopper = True;
 
@@ -20,6 +34,7 @@ objY = [];
 objL = [];
 objH = [];
 objVals = [];
+
 
 ## PARAMETERS ######################################################################################
 if(grasshopper):
@@ -32,7 +47,18 @@ if(grasshopper):
     ELEMENT_MAX_VALUE = 1000;
     THRESH = 1;
     L = int(X_dim);                             # Length of Floorplate
-    H = int(Y_dim);                            # Height of Floorplate
+    H = int(Y_dim);                            # Height of Floorplate\
+    
+        #    Office(0), WS(1), CL(2), CS(3), PS(4), E(5), S(6), R(7)
+    A = getGHAdjacencies();
+    print Light;
+    print Center;
+    daylightAdj = [float(x) for x in Light];
+    centerFieldAdj = [float(x) for x in Center];
+    print daylightAdj;
+    print centerFieldAdj;
+       
+    
 else:
     showDisplay = True;
     DECAY = 1;                          # Decay length for fields. Increase to extend influence of element fields
@@ -44,17 +70,21 @@ else:
     L = 100;                             # Length of Floorplate
     H = 65;                            # Height of Floorplate
 
-#    Office(0), WS(1), CL(2), CS(3), PS(4), E(5), S(6), R(7)
-A = [
-    [-1, 0.7, 0.9, 0.6, 0.3, 0.0, 0.0, 0.0],
-    [0.7, .7, 0.3, 0.9, 0.2, 0.0,  0.0,  -0.8],
-    [0.9, 0.3,-0.8, 0.5, 0.8, 0.8, 0.8, 0.4],
-    [0.6, 0.9, 0.5, -0.2, 0.1, 0.6, 0.6, 0.0],
-    [0.3, 0.2, 0.8, 0.1, 0.0, 0.0, 0.0, 0.0],
-    [0.0, 0.0, 0.8, 0.6, 0.0, 0.0, 1.0, 0.6],
-    [0.0, 0.0, 0.8, 0.6, 0.0,  1.0, 0.0, 0.7],
-    [0.0, -0.8, 0.4, 0.0, 0.0, 0.6, 0.7, 0.0]
-];
+    #    Office(0), WS(1), CL(2), CS(3), PS(4), E(5), S(6), R(7)
+    A = [
+        [-1, 0.7, 0.9, 0.6, 0.3, 0.0, 0.0, 0.0],
+        [0.7, .7, 0.3, 0.9, 0.2, 0.0,  0.0,  -0.8],
+        [0.9, 0.3,-0.8, 0.5, 0.8, 0.8, 0.8, 0.4],
+        [0.6, 0.9, 0.5, -0.2, 0.1, 0.6, 0.6, 0.0],
+        [0.3, 0.2, 0.8, 0.1, 0.0, 0.0, 0.0, 0.0],
+        [0.0, 0.0, 0.8, 0.6, 0.0, 0.0, 1.0, 0.6],
+        [0.0, 0.0, 0.8, 0.6, 0.0,  1.0, 0.0, 0.7],
+        [0.0, -0.8, 0.4, 0.0, 0.0, 0.6, 0.7, 0.0]
+    ];
+    daylightAdj = [0.6, 0.9, 0.5, 0.4, 0, 0, 0, 0];
+    centerFieldAdj = [-.6, -.6, -.4, -.1, .3, .9, .9, .9];
+    
+
 lhArray = [
             [9, 11],
             [6, 8],
@@ -66,9 +96,11 @@ lhArray = [
             [19, 13]];
 alphaVals = [.8, .5, 1, .6, 0, .9, .9, .9];
 elementLabels = ['Of.', 'WS', 'Lg. Conf', 'Sm. Conf', 'PS', 'Elev', 'Stairs', 'RR'];
-daylightAdj = [0.6, 0.9, 0.5, 0.4, 0, 0, 0, 0];
-centerFieldAdj = [-.6, -.6, -.4, -.1, .3, .9, .9, .9];
+
 numElements = len(A[0]);
+
+
+
 ####################################################################################################
 def runScript():
     env = Environment(L,H);
@@ -100,6 +132,7 @@ def runScript():
             hm.populateField([elem]);
             hm.addCirculation(elem);
             count += 1;
+
 
 ## Calculate Grossing Factor
 def grossingFactor(env):
