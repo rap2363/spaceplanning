@@ -1,5 +1,5 @@
 import math
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import random
 import copy
 from Grasshopper import DataTree as tree
@@ -30,7 +30,7 @@ CIRCULATION_MAX_VALUE = C_Power;        # Maximum blocking value
 DAYLIGHT_INFLUENCE = DL_Influence;      # Extent of Daylight Influence
 OBSTACLE_MAX_VALUE = 1000;
 THRESH = 1;
-showDisplay = True;                 # Toggle to False in Grasshopper
+showDisplay = False;                 # Toggle to False in Grasshopper
 L = int(X_dim);                             # Length of Floorplate
 H = int(Y_dim);                            # Height of Floorplate
 
@@ -75,7 +75,7 @@ def runScript():
     count = 0;
     for j,e in enumerate(elemsToPlace):
         scaleVector = A[e[2]];
-        plt.hold(True);
+#        plt.hold(True);
         for i in range(int(e[3])):
             [[y0,x0],val0] = hm.maximizeConvolvedHeatMap(e[0], e[1], e[2]);
             [[y1,x1],val1] = hm.maximizeConvolvedHeatMap(e[1], e[0], e[2]);
